@@ -1,0 +1,21 @@
+app_name: MyAwesomeAPI
+port: 8080
+database: sqlite
+
+endpoints:
+  - name: /users
+    method: GET
+    response:
+      id: int
+      name: string
+  - name: /users/{id}
+    method: GET
+    response:
+      id: int
+      name: string
+  - name: /products
+    method: GET
+    response:
+      id: int
+      name: string
+      price: float
