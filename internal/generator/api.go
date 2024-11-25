@@ -2,8 +2,8 @@ package generator
 
 import (
 	"fmt"
-	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -39,6 +39,7 @@ func GenerateAPI(config *parser.Config, outputDir string) error {
 		"Namespace": namespace,
 		"Port":      config.Port,
 		"Resources": resources,
+		"Logging":   config.Logging,
 	}
 	if err := generateFromTemplate("server.tpl", serverFile, serverData); err != nil {
 		return err
@@ -48,10 +49,19 @@ func GenerateAPI(config *parser.Config, outputDir string) error {
 		routeFile := filepath.Join(outputDir, "routes", fmt.Sprintf("%s.go", resource))
 		handlerFile := filepath.Join(outputDir, "handlers", fmt.Sprintf("%s.go", resource))
 
+		hasProtectedEndpoints := false
+		for _, endpoint := range endpoints {
+			if endpoint.Protected {
+				hasProtectedEndpoints = true
+				break
+			}
+		}
+
 		data := map[string]interface{}{
-			"Namespace": namespace,
-			"Resource":  resource,
-			"Endpoints": endpoints,
+			"Namespace":             namespace,
+			"Resource":              resource,
+			"Endpoints":             endpoints,
+			"HasProtectedEndpoints": hasProtectedEndpoints,
 		}
 
 		if err := generateFromTemplate("route.tpl", routeFile, data); err != nil {
@@ -65,6 +75,104 @@ func GenerateAPI(config *parser.Config, outputDir string) error {
 	docsFile := filepath.Join(outputDir, "docs", "swagger.yaml")
 	if err := generateFromTemplate("swagger.tpl", docsFile, config); err != nil {
 		return err
+	}
+
+	if config.Authentication != nil {
+		middlewareFile := filepath.Join(outputDir, "middleware", "auth.go")
+		if err := generateFromTemplate("middleware.tpl", middlewareFile, config.Authentication); err != nil {
+			return fmt.Errorf("erro ao gerar o middleware de autenticação: %w", err)
+		}
+	}
+
+	if config.Logging != nil && config.Logging.Enabled {
+		middlewareDir := filepath.Join(outputDir, "middleware")
+		if err := os.MkdirAll(middlewareDir, 0755); err != nil {
+			return fmt.Errorf("erro ao criar diretório de middleware: %w", err)
+		}
+
+		middlewareFile := filepath.Join(middlewareDir, "logging.go")
+		// Corrigir o caminho do template para apontar para templates/logging.tpl
+		if err := generateFromTemplate("logging.tpl", middlewareFile, config.Logging); err != nil {
+			return fmt.Errorf("erro ao gerar middleware de logging: %w", err)
+		}
+	}
+
+	dbFile := filepath.Join(outputDir, "database", "database.go")
+	if err := generateFromTemplate("database.tpl", dbFile, config.Database); err != nil {
+		return fmt.Errorf("erro ao gerar o arquivo de banco de dados: %w", err)
+	}
+
+	if err := updateGoMod(outputDir, config.Database.Type); err != nil {
+		return fmt.Errorf("erro ao atualizar go.mod: %w", err)
+	}
+
+	if config.Database.Type == "sqlite" {
+		fmt.Println(`
+IMPORTANTE: Para usar SQLite, habilite o CGO_ENABLED ao rodar ou compilar o projeto:
+  - Rodar: CGO_ENABLED=1 go run main.go
+  - Compilar: CGO_ENABLED=1 go build -o myapp main.go
+		`)
+	}
+
+	return nil
+}
+
+func updateGoMod(outputDir, dbType string) error {
+	goModPath := filepath.Join(outputDir, "go.mod")
+
+	// Dependências básicas
+	dependencies := []struct {
+		Module  string
+		Version string
+	}{
+		// Dependência JWT
+		{"github.com/golang-jwt/jwt/v4", "v4.5.0"},
+	}
+
+	// Dependências específicas para o banco de dados
+	switch dbType {
+	case "sqlite":
+		dependencies = append(dependencies, struct {
+			Module  string
+			Version string
+		}{"github.com/mattn/go-sqlite3", "v1.14.17"})
+	case "mysql":
+		dependencies = append(dependencies, struct {
+			Module  string
+			Version string
+		}{"github.com/go-sql-driver/mysql", "v1.6.0"})
+	case "postgresql":
+		dependencies = append(dependencies, struct {
+			Module  string
+			Version string
+		}{"github.com/lib/pq", "v1.10.5"})
+	}
+
+	// Ler o arquivo go.mod existente
+	content, err := os.ReadFile(goModPath)
+	if err != nil {
+		return fmt.Errorf("erro ao ler go.mod: %w", err)
+	}
+
+	// Adicionar dependências ao go.mod
+	updatedContent := string(content)
+	for _, dep := range dependencies {
+		updatedContent += fmt.Sprintf("\nrequire %s %s\n", dep.Module, dep.Version)
+	}
+
+	if err := os.WriteFile(goModPath, []byte(updatedContent), 0644); err != nil {
+		return fmt.Errorf("erro ao atualizar go.mod: %w", err)
+	}
+
+	// Rodar `go get` para instalar as dependências
+	for _, dep := range dependencies {
+		cmd := exec.Command("go", "get", dep.Module+"@"+dep.Version)
+		cmd.Dir = outputDir
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("erro ao executar 'go get' para %s: %w", dep.Module, err)
+		}
 	}
 
 	return nil
@@ -97,39 +205,6 @@ func generateFromTemplate(templatePath, outputPath string, data interface{}) err
 	return tmpl.Execute(file, data)
 }
 
-func copySwaggerUI(outputDir string) error {
-	srcDir := "internal/templates/swagger-ui"
-	destDir := filepath.Join(outputDir, "swagger-ui")
-
-	return filepath.Walk(srcDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		relPath, _ := filepath.Rel(srcDir, path)
-		destPath := filepath.Join(destDir, relPath)
-
-		if info.IsDir() {
-			return os.MkdirAll(destPath, os.ModePerm)
-		}
-
-		srcFile, err := os.Open(path)
-		if err != nil {
-			return err
-		}
-		defer srcFile.Close()
-
-		destFile, err := os.Create(destPath)
-		if err != nil {
-			return err
-		}
-		defer destFile.Close()
-
-		_, err = io.Copy(destFile, srcFile)
-		return err
-	})
-}
-
 func groupRoutesByResource(endpoints []parser.Endpoint) map[string][]parser.Endpoint {
 	grouped := make(map[string][]parser.Endpoint)
 	for _, endpoint := range endpoints {
@@ -141,7 +216,10 @@ func groupRoutesByResource(endpoints []parser.Endpoint) map[string][]parser.Endp
 
 func generateGoMod(outputDir string) error {
 	moduleName := filepath.Base(outputDir)
-	goModContent := fmt.Sprintf("module %s\n\ngo 1.20\n", moduleName)
+	goModContent := fmt.Sprintf(`module %s
+
+go 1.20
+`, moduleName)
 
 	goModPath := filepath.Join(outputDir, "go.mod")
 	if err := os.WriteFile(goModPath, []byte(goModContent), 0644); err != nil {
