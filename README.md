@@ -3,13 +3,14 @@
 
 **Um gerador de APIs automatizado, simples e poderoso.**
 
-O **GAPIzer** é uma ferramenta CLI que permite gerar APIs completas a partir de um arquivo de configuração YAML. Ele cria a estrutura do projeto, incluindo rotas, handlers, documentação (Swagger) e muito mais. Ideal para desenvolvedores que desejam agilidade no desenvolvimento de APIs.
+O **GAPIzer** é uma ferramenta CLI que permite gerar APIs completas a partir de um arquivo de configuração YAML. Ele cria a estrutura do projeto, incluindo rotas, handlers, middlewares (como autenticação e logging), documentação (Swagger) e muito mais. Ideal para desenvolvedores que desejam agilidade no desenvolvimento de APIs.
 
 ---
 
 ## 🚀 Instalação
 
 ### Pré-requisitos
+
 1. **Golang**: Certifique-se de que o Go está instalado.  
    - Para instalar: [https://go.dev/dl/](https://go.dev/dl/)
    - Para verificar:
@@ -22,6 +23,7 @@ O **GAPIzer** é uma ferramenta CLI que permite gerar APIs completas a partir de
 ---
 
 ### Instalação Local
+
 1. Clone o repositório:
    ```bash
    git clone https://github.com/seu-usuario/gapizer.git
@@ -43,18 +45,35 @@ O **GAPIzer** é uma ferramenta CLI que permite gerar APIs completas a partir de
 ## 🛠️ Como Usar
 
 ### Comando Básico
+
 ```bash
 gapizer --config <arquivo_yaml> --output <diretorio_destino>
 ```
 
 ### Exemplo Rápido
+
 1. Crie um arquivo `example.yml` com a seguinte configuração:
    ```yaml
    app_name: MyAwesomeAPI
    port: 8080
+   database:
+     type: sqlite
+     name: ./data.db
+
+   logging:
+     enabled: true
+     output: console # Pode ser "console" ou "file"
+     file_path: logs/server.log
+
+   authentication:
+     type: jwt
+     secret: mysupersecretkey
+     token_expiration_minutes: 60
+
    endpoints:
      - name: /users
        method: GET
+       protected: true
        response:
          id: int
          name: string
@@ -83,6 +102,11 @@ gapizer --config <arquivo_yaml> --output <diretorio_destino>
    ├── routes/
    │   ├── users.go
    │   └── products.go
+   ├── middleware/
+   │   ├── auth.go
+   │   └── logging.go
+   ├── database/
+   │   └── database.go
    ├── docs/
    │   └── swagger.yaml
    ├── main.go
@@ -97,7 +121,7 @@ gapizer --config <arquivo_yaml> --output <diretorio_destino>
    ```
 
 5. Teste os endpoints gerados:
-   - **GET /users**
+   - **GET /users** (protegido, requer JWT)
    - **POST /products**
 
 ---
@@ -107,33 +131,39 @@ gapizer --config <arquivo_yaml> --output <diretorio_destino>
 O arquivo YAML define os endpoints e outras configurações da API. Aqui está um exemplo completo:
 
 ```yaml
-app_name: MyAPI           # Nome da aplicação
-port: 8080                # Porta do servidor
-endpoints:                # Lista de endpoints
-  - name: /users          # Nome do endpoint
-    method: GET           # Método HTTP
-    response:             # Resposta da API
+app_name: MyAwesomeAPI           # Nome da aplicação
+port: 8080                       # Porta do servidor
+database:                        # Configuração do banco de dados
+  type: sqlite                   # Tipos suportados: sqlite, mysql, postgresql
+  name: ./data.db
+
+logging:                         # Configuração de logs
+  enabled: true                  # Habilitar ou desabilitar logs
+  output: console                # "console" ou "file"
+  file_path: logs/server.log     # Caminho para arquivo de logs (se output = file)
+
+authentication:                  # Configuração de autenticação
+  type: jwt                      # Tipo de autenticação (atualmente suporta apenas JWT)
+  secret: mysupersecretkey       # Chave secreta para assinar tokens JWT
+  token_expiration_minutes: 60   # Expiração do token em minutos
+
+endpoints:                       # Lista de endpoints
+  - name: /users                 # Caminho do endpoint
+    method: GET                  # Método HTTP
+    protected: true              # Define se o endpoint é protegido (requer autenticação)
+    response:                    # Estrutura da resposta
       id: int
       name: string
-  - name: /products        # Endpoint para criar produtos
+  - name: /products
     method: POST
-    request:              # Dados de entrada
+    request:                     # Estrutura da requisição
       name: string
       price: float
-    response:             # Resposta da API
+    response:                    # Estrutura da resposta
       id: int
       name: string
       price: float
 ```
-
-### Configurações Suportadas
-- **`app_name`**: Nome da aplicação.
-- **`port`**: Porta na qual o servidor será executado.
-- **`endpoints`**: Lista de endpoints, com:
-  - **`name`**: Caminho do endpoint (ex.: `/users`).
-  - **`method`**: Método HTTP (GET, POST, PUT, DELETE).
-  - **`request`** (opcional): Estrutura do payload esperado na requisição.
-  - **`response`**: Estrutura da resposta enviada pela API.
 
 ---
 
@@ -149,12 +179,14 @@ O **GAPIzer** gera automaticamente a documentação Swagger no arquivo `swagger.
 ## 📋 Comandos Disponíveis
 
 ### Ajuda
+
 Exibe os comandos disponíveis:
 ```bash
 gapizer --help
 ```
 
 ### Gerar API
+
 Gera a estrutura da API:
 ```bash
 gapizer --config <arquivo_yaml> --output <diretorio_destino>
@@ -188,9 +220,10 @@ Contribuições são bem-vindas! Para contribuir, siga estas etapas:
 ## 🛣️ Roadmap
 
 Funcionalidades planejadas para o futuro:
-- Suporte nativo ao Swagger UI.
+- Suporte a Swagger UI diretamente no servidor gerado.
 - Geração de clientes em diferentes linguagens (TypeScript, Python, etc.).
-- Integração com bancos de dados para geração dinâmica de APIs.
+- Suporte a banco de dados dinamicamente mapeado.
+- Logs estruturados em formato JSON para integração com ferramentas de monitoramento.
 
 ---
 
