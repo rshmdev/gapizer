@@ -2,8 +2,10 @@ name: Build and Release
 
 on:
   push:
+    branches:
+      - main  # Roda sempre que houver push na branch 'main'
     tags:
-      - 'v*.*.*' # Dispara quando uma tag de versão for criada (ex.: v1.0.0)
+      - 'v*.*.*'  # Também roda quando uma tag é criada (ex.: v1.0.0)
 
 jobs:
   build:
@@ -44,6 +46,7 @@ jobs:
           name: binaries
 
       - name: Create GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         uses: ncipollo/release-action@v1
         with:
           artifacts: bin/*
