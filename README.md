@@ -18,7 +18,7 @@ O **GAPIzer** é uma ferramenta CLI que permite gerar APIs completas a partir de
      go version
      ```
 
-2. **Node.js (opcional)**: Caso você queira disponibilizar a CLI pelo `npm`.
+<!-- 2. **Node.js (opcional)**: Caso você queira disponibilizar a CLI pelo `npm`. -->
 
 ---
 
@@ -26,7 +26,7 @@ O **GAPIzer** é uma ferramenta CLI que permite gerar APIs completas a partir de
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/gapizer.git
+   git clone https://github.com/rshmdev/gapizer.git
    cd gapizer
    ```
 
