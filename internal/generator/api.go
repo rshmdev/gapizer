@@ -8,7 +8,7 @@ import (
 	"strings"
 	"text/template"
 
-	"gapizer/internal/parser"
+	"github.com/rshmdev/gapizer/internal/parser"
 )
 
 func SanitizeFileName(name string) string {
