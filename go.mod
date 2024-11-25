@@ -1,4 +1,4 @@
-module gapizer
+module github.com/rshmdev/gapizer
 
 go 1.23
 

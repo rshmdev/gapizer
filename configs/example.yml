@@ -1,21 +1,31 @@
 app_name: MyAwesomeAPI
 port: 8080
-database: sqlite
+database:
+  type: sqlite
+  name: ./data.db
+
+authentication:
+  type: jwt
+  secret: mysupersecretkey
+  token_expiration_minutes: 60
+  
+logging:
+  enabled: true
+  output: console # Pode ser "console" ou "file"
+  file_path: logs/server.log
 
 endpoints:
   - name: /users
     method: GET
+    protected: true
     response:
       id: int
       name: string
-  - name: /users/{id}
-    method: GET
+
+  - name: /login
+    method: POST
+    request:
+      username: string
+      password: string
     response:
-      id: int
-      name: string
-  - name: /products
-    method: GET
-    response:
-      id: int
-      name: string
-      price: float
+      token: string
