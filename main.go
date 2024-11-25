@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"gapizer/internal/generator"
-	"gapizer/internal/parser"
+	"github.com/rshmdev/gapizer/internal/generator"
+	"github.com/rshmdev/gapizer/internal/parser"
 )
 
 func main() {

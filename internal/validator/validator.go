@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"gapizer/internal/parser"
+	"github.com/rshmdev/gapizer/internal/parser"
 )
 
 func ValidateConfig(config *parser.Config) error {
