@@ -1,0 +1,18 @@
+{
+  "name": "gapizer",
+  "version": "1.0.3",
+  "description": "GAPIzer - Um gerador de APIs automatizado",
+  "bin": {
+    "gapizer": "./cli.js"
+  },
+  "scripts": {
+    "build": "echo 'Build executado pelo Go' && exit 0"
+  },
+  "author": "Rian Moraes",
+  "license": "MIT",
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ]
+}

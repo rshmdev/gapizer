@@ -18,11 +18,54 @@ O **GAPIzer** é uma ferramenta CLI que permite gerar APIs completas a partir de
      go version
      ```
 
-<!-- 2. **Node.js (opcional)**: Caso você queira disponibilizar a CLI pelo `npm`. -->
+---
+
+### 1. Instalação via npm
+
+Instale o GAPIzer globalmente usando o npm:
+
+```bash
+npm install -g gapizer
+```
+
+### 2. Usando Binários Pré-Compilados
+
+1. Acesse a página de [Releases](https://github.com/rshmdev/gapizer/releases).
+2. Baixe o binário apropriado para o seu sistema operacional:
+   - **Windows**: `gapizer-windows.exe`
+   - **Linux**: `gapizer-linux`
+   - **macOS**: `gapizer-mac`
+
+#### **Configurar o Binário no PATH**
+
+- **Windows**:
+  1. Renomeie o arquivo, se necessário, para `gapizer.exe`.
+  2. Mova o arquivo para um diretório no PATH, como:
+     ```bash
+     move gapizer.exe C:\Windows\System32
+     ```
+  3. Teste:
+     ```bash
+     gapizer --help
+     ```
+
+- **Linux/macOS**:
+  1. Torne o arquivo executável:
+     ```bash
+     chmod +x gapizer-linux
+     ```
+  2. Mova o arquivo para `/usr/local/bin` ou outro diretório no PATH:
+     ```bash
+     sudo mv gapizer-linux /usr/local/bin/gapizer
+     ```
+  3. Teste:
+     ```bash
+     gapizer --help
+     ```
 
 ---
 
-### Instalação Local
+### 3. Instalação Local (Compilando o Código)
 
 1. Clone o repositório:
    ```bash
