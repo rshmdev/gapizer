@@ -3,12 +3,10 @@ name: Build and Release
 on:
   push:
     branches:
-      - main
-    tags:
-      - 'v*.*.*'
+      - main # Sempre que houver um push na main
 
 permissions:
-  contents: write  
+  contents: write
 
 jobs:
   build:
@@ -22,7 +20,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.23" # Especifica explicitamente a versão do Go
+          go-version: "1.23"
 
       - name: Build binaries
         run: |
@@ -51,15 +49,20 @@ jobs:
         with:
           name: binaries
 
+      - name: Get Current Date and Time
+        id: datetime
+        run: echo "::set-output name=datetime::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: main  # Usa a branch 'main' como base
+          tag: "auto-generated-main" # Tag fixa para identificar as releases automáticas da main
           artifacts: bin/*
+          release_name: "Release - ${{ steps.datetime.outputs.datetime }}" # Nome com a data e hora
           body: |
-            **Novos binários gerados automaticamente para esta versão:**
+            **Novos binários gerados automaticamente com as últimas mudanças:**
             - Windows: gapizer-windows.exe
             - Linux: gapizer-linux
             - macOS: gapizer-mac
-          prerelease: true  # Marca como prerelease
+          prerelease: true
