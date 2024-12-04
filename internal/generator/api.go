@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"embed"
 	"fmt"
 	"os"
 	"os/exec"
@@ -10,6 +11,8 @@ import (
 
 	"github.com/rshmdev/gapizer/internal/parser"
 )
+
+var templateFS embed.FS
 
 func SanitizeFileName(name string) string {
 	replacer := strings.NewReplacer("{", "_", "}", "_", "/", "_")
@@ -184,24 +187,32 @@ func generateFromTemplate(templatePath, outputPath string, data interface{}) err
 		"title": strings.Title,
 	}
 
-	tmplPath := filepath.Join("internal", "templates", templatePath)
-
-	tmpl, err := template.New(filepath.Base(templatePath)).Funcs(funcMap).ParseFiles(tmplPath)
+	// Carregar o conteúdo do template a partir do embed
+	templateContent, err := templateFS.ReadFile(filepath.Join("templates", templatePath))
 	if err != nil {
-		return fmt.Errorf("erro ao carregar template: %w", err)
+		return fmt.Errorf("erro ao carregar template embutido: %w", err)
 	}
 
+	// Parse o conteúdo do template
+	tmpl, err := template.New(filepath.Base(templatePath)).Funcs(funcMap).Parse(string(templateContent))
+	if err != nil {
+		return fmt.Errorf("erro ao parsear template: %w", err)
+	}
+
+	// Criar o diretório do arquivo de saída
 	dir := filepath.Dir(outputPath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return fmt.Errorf("erro ao criar diretório do arquivo de saída: %w", err)
 	}
 
+	// Criar o arquivo de saída
 	file, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("erro ao criar arquivo de saída: %w", err)
 	}
 	defer file.Close()
 
+	// Executar o template e escrever no arquivo de saída
 	return tmpl.Execute(file, data)
 }
 
