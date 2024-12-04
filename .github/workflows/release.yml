@@ -28,18 +28,11 @@ jobs:
       - name: Install Inno Setup
         run: choco install innosetup --yes
 
-      - name: Debug Paths Before Build
-        run: |
-          echo "Current Directory:"
-          pwd
-          echo "Listing bin Directory:"
-          dir bin
-
       - name: Build Windows Installer
         run: |
           "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' gapizer_installer.iss"
 
-      - name: Debug Paths After Build
+      - name: Debug Paths
         run: |
           echo "Current Directory:"
           pwd
@@ -68,7 +61,7 @@ jobs:
 
       - name: Generate Tag Name
         id: generate_tag
-        run: echo "tag=release-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        run: echo "tag=auto-generated-main-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
