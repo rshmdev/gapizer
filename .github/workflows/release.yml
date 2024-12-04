@@ -61,13 +61,13 @@ jobs:
 
       - name: Generate Tag Name
         id: generate_tag
-        run: echo "tag=auto-generated-main-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        run: echo "::set-output name=tag::auto-generated-main-$(date +'%Y%m%d%H%M%S')"
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.tag }}
+          tag: ${{ steps.generate_tag.outputs.tag }}
           artifacts: Output\GAPIzer-Installer.exe
           name: "GAPIzer Installer"
           body: |
