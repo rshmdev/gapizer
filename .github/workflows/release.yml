@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Windows Installer
         run: |
-          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /Q gapizer_installer.iss
+          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /Q gapizer_installer.iss"
 
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
