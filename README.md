@@ -28,40 +28,17 @@ Instale o GAPIzer globalmente usando o npm:
 npm install -g gapizer
 ```
 
-### 2. Usando Binários Pré-Compilados
+### 2. Usando o Instalador para Windows
 
 1. Acesse a página de [Releases](https://github.com/rshmdev/gapizer/releases).
-2. Baixe o binário apropriado para o seu sistema operacional:
-   - **Windows**: `gapizer-windows.exe`
-   - **Linux**: `gapizer-linux`
-   - **macOS**: `gapizer-mac`
+2. Baixe o instalador mais recente::
+ - **Windows**: `GAPIzer-Installer.exe`
 
-#### **Configurar o Binário no PATH**
+#### **Instalar no Windows**
 
-- **Windows**:
-  1. Renomeie o arquivo, se necessário, para `gapizer.exe`.
-  2. Mova o arquivo para um diretório no PATH, como:
-     ```bash
-     move gapizer.exe C:\Windows\System32
-     ```
-  3. Teste:
-     ```bash
-     gapizer --help
-     ```
-
-- **Linux/macOS**:
-  1. Torne o arquivo executável:
-     ```bash
-     chmod +x gapizer-linux
-     ```
-  2. Mova o arquivo para `/usr/local/bin` ou outro diretório no PATH:
-     ```bash
-     sudo mv gapizer-linux /usr/local/bin/gapizer
-     ```
-  3. Teste:
-     ```bash
-     gapizer --help
-     ```
+  1. Execute o instalador baixado `(GAPIzer-Installer.exe)`.
+  2. Siga as instruções exibidas na tela.
+  3. Após a instalação, o comando gapizer será configurado automaticamente no PATH do sistema.
 
 ---
 

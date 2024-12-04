@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build Windows Installer and Release
 
 on:
   push:
@@ -10,8 +10,8 @@ permissions:
 
 jobs:
   build:
-    name: Build binaries for all platforms
-    runs-on: ubuntu-latest
+    name: Build Windows Installer
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -22,18 +22,21 @@ jobs:
         with:
           go-version: "1.23"
 
-      - name: Build binaries
-        run: |
-          mkdir -p bin
-          GOOS=windows GOARCH=amd64 go build -o bin/gapizer-windows.exe
-          GOOS=linux GOARCH=amd64 go build -o bin/gapizer-linux
-          GOOS=darwin GOARCH=amd64 go build -o bin/gapizer-mac
+      - name: Build Windows Binary
+        run: go build -o bin/gapizer.exe
 
-      - name: Upload binaries as artifacts
+      - name: Install Inno Setup
+        run: choco install innosetup --yes
+
+      - name: Build Windows Installer
+        run: |
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /Q gapizer_installer.iss
+
+      - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: binaries
-          path: bin/
+          name: gapizer-installer
+          path: Output\GAPIzer-Installer.exe # Caminho onde o instalador é gerado pelo Inno Setup
 
   release:
     name: Create GitHub Release
@@ -44,10 +47,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Download build artifacts
+      - name: Download Installer Artifact
         uses: actions/download-artifact@v4
         with:
-          name: binaries
+          name: gapizer-installer
 
       - name: Get Current Date and Time
         id: datetime
@@ -58,11 +61,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: "auto-generated-main" # Tag fixa para identificar as releases automáticas da main
-          artifacts: bin/*
-          release_name: "Release - ${{ steps.datetime.outputs.datetime }}" # Nome com a data e hora
+          artifacts: Output/GAPIzer-Installer.exe
+          release_name: "GAPIzer Installer - ${{ steps.datetime.outputs.datetime }}"
           body: |
-            **Novos binários gerados automaticamente com as últimas mudanças:**
-            - Windows: gapizer-windows.exe
-            - Linux: gapizer-linux
-            - macOS: gapizer-mac
+            **Instalador gerado automaticamente com as últimas mudanças**
           prerelease: true
