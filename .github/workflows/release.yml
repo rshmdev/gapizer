@@ -38,32 +38,31 @@ jobs:
           name: gapizer-installer
           path: Output\GAPIzer-Installer.exe # Caminho onde o instalador é gerado pelo Inno Setup
 
-release:
-  name: Create GitHub Release
-  needs: build
-  runs-on: ubuntu-latest
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Download Installer Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: gapizer-installer
+      - name: Download Installer Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: gapizer-installer
 
-    - name: Generate Tag Name
-      id: generate_tag
-      run: echo "tag=release-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+      - name: Generate Tag Name
+        id: generate_tag
+        run: echo "tag=release-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-    - name: Create GitHub Release
-      uses: ncipollo/release-action@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ env.tag }}
-        artifacts: Output/GAPIzer-Installer.exe
-        name: "GAPIzer Installer"
-        body: |
-          **Instalador gerado automaticamente com as últimas mudanças**
-        prerelease: true
-
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.tag }}
+          artifacts: Output/GAPIzer-Installer.exe
+          name: "GAPIzer Installer"
+          body: |
+            **Instalador gerado automaticamente com as últimas mudanças**
+          prerelease: true
