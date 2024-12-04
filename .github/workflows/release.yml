@@ -30,18 +30,18 @@ jobs:
 
       - name: Build Windows Installer
         run: |
-          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /Q gapizer_installer.iss"
+          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' gapizer_installer.iss"
 
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: gapizer-installer
-          path: Output\GAPIzer-Installer.exe # Caminho onde o instalador é gerado pelo Inno Setup
+          path: ./Output/GAPIzer-Installer.exe # Corrigido o caminho absoluto
 
   release:
     name: Create GitHub Release
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -61,7 +61,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.tag }}
-          artifacts: Output/GAPIzer-Installer.exe
+          artifacts: ./Output/GAPIzer-Installer.exe # Caminho corrigido
           name: "GAPIzer Installer"
           body: |
             **Instalador gerado automaticamente com as últimas mudanças**
