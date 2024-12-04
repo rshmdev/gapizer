@@ -4,7 +4,7 @@ AppVersion=1.0.0
 DefaultDirName={commonpf}\GAPIzer
 DefaultGroupName=GAPIzer
 OutputBaseFilename=GAPIzer-Installer
-Compression=bzip2
+Compression=zip
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
