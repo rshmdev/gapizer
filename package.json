@@ -1,7 +1,12 @@
 {
   "name": "gapizer",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "GAPIzer - Um gerador de APIs automatizado",
+  "homepage": "https://gapizer-lp.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rshmdev/gapizer"
+  },
   "bin": {
     "gapizer": "./cli.js"
   },
