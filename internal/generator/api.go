@@ -21,6 +21,7 @@ func SanitizeFileName(name string) string {
 }
 
 func GenerateAPI(config *parser.Config, outputDir string) error {
+
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
 		return err
 	}
