@@ -9,10 +9,6 @@ let binary = null;
 
 if (platform === 'win32') {
   binary = path.join(__dirname, 'bin', 'gapizer.exe');
-} else if (platform === 'darwin') {
-  binary = path.join(__dirname, 'bin', 'gapizer-mac');
-} else if (platform === 'linux') {
-  binary = path.join(__dirname, 'bin', 'gapizer-linux');
 } else {
   console.error(`Sistema operacional não suportado: ${platform}`);
   process.exit(1);
