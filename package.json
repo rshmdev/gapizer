@@ -1,6 +1,6 @@
 {
   "name": "gapizer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "GAPIzer - Um gerador de APIs automatizado",
   "bin": {
     "gapizer": "./cli.js"
