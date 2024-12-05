@@ -12,6 +12,7 @@ import (
 	"github.com/rshmdev/gapizer/internal/parser"
 )
 
+//go:embed templates/*
 var templateFS embed.FS
 
 func SanitizeFileName(name string) string {
