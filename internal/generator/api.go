@@ -45,7 +45,7 @@ func GenerateAPI(config *parser.Config, outputDir string) error {
 		"Resources": resources,
 		"Logging":   config.Logging,
 	}
-	if err := generateFromTemplate("server.tpl", serverFile, serverData); err != nil {
+	if err := generateFromTemplate("templates/server.tpl", serverFile, serverData); err != nil {
 		return err
 	}
 
@@ -68,22 +68,22 @@ func GenerateAPI(config *parser.Config, outputDir string) error {
 			"HasProtectedEndpoints": hasProtectedEndpoints,
 		}
 
-		if err := generateFromTemplate("route.tpl", routeFile, data); err != nil {
+		if err := generateFromTemplate("templates/route.tpl", routeFile, data); err != nil {
 			return err
 		}
-		if err := generateFromTemplate("handler.tpl", handlerFile, data); err != nil {
+		if err := generateFromTemplate("templates/handler.tpl", handlerFile, data); err != nil {
 			return err
 		}
 	}
 
 	docsFile := filepath.Join(outputDir, "docs", "swagger.yaml")
-	if err := generateFromTemplate("swagger.tpl", docsFile, config); err != nil {
+	if err := generateFromTemplate("templates/swagger.tpl", docsFile, config); err != nil {
 		return err
 	}
 
 	if config.Authentication != nil {
 		middlewareFile := filepath.Join(outputDir, "middleware", "auth.go")
-		if err := generateFromTemplate("middleware.tpl", middlewareFile, config.Authentication); err != nil {
+		if err := generateFromTemplate("templates/middleware.tpl", middlewareFile, config.Authentication); err != nil {
 			return fmt.Errorf("erro ao gerar o middleware de autenticação: %w", err)
 		}
 	}
@@ -95,14 +95,13 @@ func GenerateAPI(config *parser.Config, outputDir string) error {
 		}
 
 		middlewareFile := filepath.Join(middlewareDir, "logging.go")
-		// Corrigir o caminho do template para apontar para templates/logging.tpl
-		if err := generateFromTemplate("logging.tpl", middlewareFile, config.Logging); err != nil {
+		if err := generateFromTemplate("templates/logging.tpl", middlewareFile, config.Logging); err != nil {
 			return fmt.Errorf("erro ao gerar middleware de logging: %w", err)
 		}
 	}
 
 	dbFile := filepath.Join(outputDir, "database", "database.go")
-	if err := generateFromTemplate("database.tpl", dbFile, config.Database); err != nil {
+	if err := generateFromTemplate("templates/database.tpl", dbFile, config.Database); err != nil {
 		return fmt.Errorf("erro ao gerar o arquivo de banco de dados: %w", err)
 	}
 
@@ -189,7 +188,7 @@ func generateFromTemplate(templatePath, outputPath string, data interface{}) err
 	}
 
 	// Carregar o conteúdo do template a partir do embed
-	templateContent, err := templateFS.ReadFile(filepath.Join("templates", templatePath))
+	templateContent, err := templateFS.ReadFile(templatePath)
 	if err != nil {
 		return fmt.Errorf("erro ao carregar template embutido: %w", err)
 	}
