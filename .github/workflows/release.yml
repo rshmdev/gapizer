@@ -32,7 +32,7 @@ jobs:
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: gapizer_installer.iss
-          options: /O+ /LOG=Output/build-log.txt
+          options: /O+ /F"Output\GAPIzer-Installer.exe"
 
       - name: Debug Paths
         run: |
