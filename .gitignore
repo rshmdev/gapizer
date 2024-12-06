@@ -5,7 +5,6 @@ bin/
 
 # Node.js related files
 cli/node_modules/
-cli/package-lock.json
 
 # Installer output
 Output/
