@@ -1,6 +1,6 @@
 {
   "name": "gapizer",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "GAPIzer - Um gerador de APIs automatizado",
   "homepage": "https://gapizer-lp.vercel.app/",
   "repository": {
