@@ -3,7 +3,7 @@ name: Build Windows Installer and Release
 on:
   push:
     branches:
-      - main
+      - main # Sempre que houver um push na main
 
 permissions:
   contents: write
@@ -25,37 +25,53 @@ jobs:
       - name: Build Windows Binary
         run: go build -o bin/gapizer.exe
 
-      - name: Install Inno Setup
-        run: choco install innosetup --yes
-
       - name: Create Output Directory
         run: mkdir Output
 
-      - name: Validate Binary in bin Directory
-        run: |
-          echo "Checking bin directory contents:"
-          dir bin
+      - name: Compile .ISS to .EXE Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: gapizer_installer.iss
+          options: /O+ /LOG=Output/build-log.txt
 
-      - name: Build Windows Installer with Logs
+      - name: Debug Paths
         run: |
-          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /LOG=Output\build-log.txt gapizer_installer.iss"
-          echo "Build log generated:"
-          type Output\build-log.txt
-
-      - name: Debug All Files After Build
-        run: |
-          echo "Listing all files and directories after building installer:"
-          Get-ChildItem -Path . -Recurse
-
-      - name: Check Installer File
-        run: |
-          if (!(Test-Path "Output\GAPIzer-Installer.exe")) {
-            Write-Error "File not found: Output\GAPIzer-Installer.exe"
-            exit 1
-          }
+          echo "Current Directory:"
+          pwd
+          echo "Listing Output Directory:"
+          dir Output
 
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: gapizer-installer
           path: Output\GAPIzer-Installer.exe
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download Installer Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: gapizer-installer
+
+      - name: Generate Tag Name
+        id: generate_tag
+        run: echo "::set-output name=tag::auto-generated-main-$(date +'%Y%m%d%H%M%S')"
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.generate_tag.outputs.tag }}
+          artifacts: Output\GAPIzer-Installer.exe
+          name: "GAPIzer Installer"
+          body: |
+            **Instalador gerado automaticamente com as últimas mudanças**
+          prerelease: true
