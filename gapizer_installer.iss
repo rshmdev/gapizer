@@ -3,20 +3,15 @@ AppName=GAPIzer
 AppVersion=1.0.0
 DefaultDirName={commonpf}\GAPIzer
 DefaultGroupName=GAPIzer
-OutputDir=Output
-OutputBaseFilename=GAPIzerInstaller
+OutputBaseFilename=GAPIzer-Installer
 Compression=zip
-SolidCompression=yes
-AppPublisher=SHM SOFTWARE SOLUTIONS
-AppPublisherURL=SHM SOFTWARE SOLUTIONS
-AppSupportURL=https://github.com/rshmdev/gapizer
-AppUpdatesURL=https://github.com/rshmdev/gapizer
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "portuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
 
 [Files]
+; Adicione o binário gerado da pasta bin
 Source: "bin\gapizer.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
