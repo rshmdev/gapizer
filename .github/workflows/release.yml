@@ -28,12 +28,9 @@ jobs:
       - name: Install Inno Setup
         run: choco install innosetup --yes
 
-      - name: Create Output Directory
-        run: mkdir Output
-
       - name: Build Windows Installer
         run: |
-          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /O+ gapizer_installer.iss /F'Output\GAPIzerInstaller.exe'"
+          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' gapizer_installer.iss"
 
       - name: Debug Paths
         run: |
@@ -46,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gapizer-installer
-          path: Output\GAPIzerInstaller.exe
+          path: Output\GAPIzer-Installer.exe
 
   release:
     name: Create GitHub Release
@@ -71,7 +68,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.generate_tag.outputs.tag }}
-          artifacts: Output\GAPIzerInstaller.exe
+          artifacts: Output\GAPIzer-Installer.exe
           name: "GAPIzer Installer"
           body: |
             **Instalador gerado automaticamente com as últimas mudanças**
