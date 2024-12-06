@@ -18,38 +18,43 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Set up Node.js
+      # 2. Debug: Verify package-lock.json
+      - name: Verify package-lock.json
+        run: ls -la cli/
+
+      # 3. Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: 'npm'
+          cache-dependency-path: cli/package-lock.json
 
-      # 3. Install Node.js dependencies for CLI
+      # 4. Install Node.js dependencies
       - name: Install Node.js dependencies
         working-directory: cli
-        run: npm install
+        run: npm ci
 
-      # 4. Set up Go
+      # 5. Set up Go
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: "1.23"
 
-      # 5. Build Go binary
+      # 6. Build Go binary
       - name: Build Windows Binary
         run: go build -o bin/gapizer.exe
 
-      # 6. Install Inno Setup (Windows installer)
+      # 7. Install Inno Setup (Windows installer)
       - name: Install Inno Setup
         run: choco install innosetup --yes
 
-      # 7. Build Windows Installer
+      # 8. Build Windows Installer
       - name: Build Windows Installer
         run: |
           "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' installer/gapizer_installer.iss"
 
-      # 8. Debug Paths (optional, for debugging purposes)
+      # 9. Debug Paths (optional, for debugging purposes)
       - name: Debug Paths
         run: |
           echo "Current Directory:"
@@ -57,14 +62,14 @@ jobs:
           echo "Listing Output Directory:"
           dir Output
 
-      # 9. Upload Installer as Artifact
+      # 10. Upload Installer as Artifact
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: gapizer-installer
           path: Output\GAPIzer-Installer.exe
 
-      # 10. Run semantic-release for versioning and npm publish
+      # 11. Run semantic-release for versioning and npm publish
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
