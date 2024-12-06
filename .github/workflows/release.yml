@@ -33,7 +33,7 @@ jobs:
 
       - name: Build Windows Installer
         run: |
-          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /O+ gapizer_installer.iss /F"Output\GAPIzerInstaller.exe""
+          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /O+ gapizer_installer.iss /F'Output\GAPIzerInstaller.exe'"
 
       - name: Debug Paths
         run: |
