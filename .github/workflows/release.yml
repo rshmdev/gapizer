@@ -1,37 +1,55 @@
-name: Build Windows Installer and Release
+name: Build, Release, and Publish
 
 on:
   push:
     branches:
-      - main # Sempre que houver um push na main
+      - main
 
 permissions:
   contents: write
 
 jobs:
-  build:
-    name: Build Windows Installer
+  build-and-release:
+    name: Build and Release
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      # 1. Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      # 3. Install Node.js dependencies for CLI
+      - name: Install Node.js dependencies
+        working-directory: cli
+        run: npm ci
+
+      # 4. Set up Go
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: "1.23"
 
+      # 5. Build Go binary
       - name: Build Windows Binary
         run: go build -o bin/gapizer.exe
 
+      # 6. Install Inno Setup (Windows installer)
       - name: Install Inno Setup
         run: choco install innosetup --yes
 
+      # 7. Build Windows Installer
       - name: Build Windows Installer
         run: |
-          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' gapizer_installer.iss"
+          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' installer/gapizer_installer.iss"
 
+      # 8. Debug Paths (optional, for debugging purposes)
       - name: Debug Paths
         run: |
           echo "Current Directory:"
@@ -39,37 +57,16 @@ jobs:
           echo "Listing Output Directory:"
           dir Output
 
+      # 9. Upload Installer as Artifact
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: gapizer-installer
           path: Output\GAPIzer-Installer.exe
 
-  release:
-    name: Create GitHub Release
-    needs: build
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Download Installer Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: gapizer-installer
-
-      - name: Generate Tag Name
-        id: generate_tag
-        run: echo "::set-output name=tag::auto-generated-main-$(date +'%Y%m%d%H%M%S')"
-
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.generate_tag.outputs.tag }}
-          artifacts: Output\GAPIzer-Installer.exe
-          name: "GAPIzer Installer"
-          body: |
-            **Instalador gerado automaticamente com as últimas mudanças**
-          prerelease: true
+      # 10. Run semantic-release for versioning and npm publish
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release

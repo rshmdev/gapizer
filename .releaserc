@@ -1,0 +1,19 @@
+{
+    "branches": ["main"],
+    "plugins": [
+      [
+        "@semantic-release/npm",
+        {
+          "pkgRoot": "cli", 
+          "npmPublish": true
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "cd cli && npm run build && cd .. && go build -o bin/gapizer.exe && 'C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe' installer/gapizer_installer.iss"
+        }
+      ]
+    ]
+  }
+  
