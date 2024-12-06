@@ -32,7 +32,7 @@ jobs:
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: gapizer_installer.iss
-          options: /O+ /F"Output\GAPIzer_Installer.exe"
+          options: /O+ /F"Output\GAPIzerInstaller.exe"
 
       - name: Debug Paths
         run: |
@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gapizer-installer
-          path: Output\GAPIzer_Installer.exe
+          path: Output\GAPIzerInstaller.exe
 
   release:
     name: Create GitHub Release
@@ -70,7 +70,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.generate_tag.outputs.tag }}
-          artifacts: Output\GAPIzer_Installer.exe
+          artifacts: Output\GAPIzerInstaller.exe
           name: "GAPIzer Installer"
           body: |
             **Instalador gerado automaticamente com as últimas mudanças**
