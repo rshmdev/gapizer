@@ -43,7 +43,7 @@ jobs:
 
       # 6. Build Go binary
       - name: Build Windows Binary
-        run: go build -o bin/gapizer.exe
+        run: go build -o bin/gapizer.exe ./src/main.go
 
       # 7. Install Inno Setup (Windows installer)
       - name: Install Inno Setup
