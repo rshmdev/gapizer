@@ -20,7 +20,7 @@ jobs:
 
       # 2. Debug: Verify package-lock.json
       - name: Verify package-lock.json
-        run: ls -la cli/
+        run: Get-ChildItem -Path cli -Recurse
 
       # 3. Set up Node.js
       - name: Set up Node.js
