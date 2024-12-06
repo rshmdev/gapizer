@@ -1,0 +1,27 @@
+# Output folder
+Output/
+
+# Configs
+configs/
+
+# Binaries
+*.exe
+
+# Build folder
+bin/
+
+# Node.js dependencies
+node_modules/
+
+# Logs
+*.log
+
+# Go temporary files
+*.out
+
+# System files
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
