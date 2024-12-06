@@ -3,7 +3,7 @@ name: Build Windows Installer and Release
 on:
   push:
     branches:
-      - main # Sempre que houver um push na main
+      - main
 
 permissions:
   contents: write
@@ -35,12 +35,12 @@ jobs:
         run: |
           "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' gapizer_installer.iss"
 
-      - name: Debug Paths
+      - name: Check Installer File
         run: |
-          echo "Current Directory:"
-          pwd
-          echo "Listing Output Directory:"
-          dir Output
+          if not exist "Output\GAPIzer-Installer.exe" (
+            echo "File not found: Output\GAPIzer-Installer.exe"
+            exit 1
+          )
 
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
@@ -64,14 +64,14 @@ jobs:
 
       - name: Generate Tag Name
         id: generate_tag
-        run: echo "::set-output name=tag::auto-generated-main-$(date +'%Y%m%d%H%M%S')"
+        run: echo "tag=auto-generated-main-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.generate_tag.outputs.tag }}
-          artifacts: Output\GAPIzer-Installer.exe
+          tag: ${{ env.tag }}
+          artifacts: gapizer-installer\GAPIzer-Installer.exe
           name: "GAPIzer Installer"
           body: |
             **Instalador gerado automaticamente com as últimas mudanças**
