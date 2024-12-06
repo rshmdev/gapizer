@@ -34,9 +34,12 @@ jobs:
       - name: Debug Output Directory Before Build
         run: dir Output
 
+      - name: Verify Required Files
+        run: dir bin
+
       - name: Build Windows Installer with Logs
         run: |
-          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /Qp gapizer_installer.iss"
+          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /O+ gapizer_installer.iss"
           echo "Inno Setup Build Completed"
           echo "Contents of Output Directory:"
           dir Output
