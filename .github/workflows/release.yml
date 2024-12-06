@@ -28,24 +28,19 @@ jobs:
       - name: Install Inno Setup
         run: choco install innosetup --yes
 
+      - name: Create Output Directory
+        run: mkdir Output
+
       - name: Validate Binary in bin Directory
         run: |
           echo "Checking bin directory contents:"
           dir bin
 
-      - name: Create Output Directory
-        run: mkdir Output
-
-      - name: Debug All Files Before Build
-        run: |
-          echo "Listing all files and directories before building installer:"
-          Get-ChildItem -Path . -Recurse
-
       - name: Build Windows Installer with Logs
         run: |
-          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /LOG=build-log.txt gapizer_installer.iss"
+          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /LOG=Output\build-log.txt gapizer_installer.iss"
           echo "Build log generated:"
-          type build-log.txt
+          type Output\build-log.txt
 
       - name: Debug All Files After Build
         run: |
