@@ -37,10 +37,10 @@ jobs:
 
       - name: Check Installer File
         run: |
-          if not exist "Output\GAPIzer-Installer.exe" (
-            echo "File not found: Output\GAPIzer-Installer.exe"
+          if (!(Test-Path "Output\GAPIzer-Installer.exe")) {
+            Write-Error "File not found: Output\GAPIzer-Installer.exe"
             exit 1
-          )
+          }
 
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
