@@ -31,18 +31,20 @@ jobs:
       - name: Create Output Directory
         run: mkdir Output
 
-      - name: Debug Output Directory Before Build
-        run: dir Output
-
-      - name: Verify Required Files
-        run: dir bin
+      - name: Debug All Files Before Build
+        run: |
+          echo "Listing all files and directories before building installer:"
+          Get-ChildItem -Path . -Recurse
 
       - name: Build Windows Installer with Logs
         run: |
           "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /O+ gapizer_installer.iss"
           echo "Inno Setup Build Completed"
-          echo "Contents of Output Directory:"
-          dir Output
+
+      - name: Debug All Files After Build
+        run: |
+          echo "Listing all files and directories after building installer:"
+          Get-ChildItem -Path . -Recurse
 
       - name: Check Installer File
         run: |
