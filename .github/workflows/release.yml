@@ -31,9 +31,15 @@ jobs:
       - name: Create Output Directory
         run: mkdir Output
 
-      - name: Build Windows Installer
+      - name: Debug Output Directory Before Build
+        run: dir Output
+
+      - name: Build Windows Installer with Logs
         run: |
-          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' gapizer_installer.iss"
+          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /Qp gapizer_installer.iss"
+          echo "Inno Setup Build Completed"
+          echo "Contents of Output Directory:"
+          dir Output
 
       - name: Check Installer File
         run: |
@@ -71,7 +77,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.tag }}
-          artifacts: gapizer-installer\GAPIzer-Installer.exe
+          artifacts: Output\GAPIzer-Installer.exe
           name: "GAPIzer Installer"
           body: |
             **Instalador gerado automaticamente com as últimas mudanças**
