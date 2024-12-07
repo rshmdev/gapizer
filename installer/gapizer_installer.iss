@@ -5,6 +5,7 @@ DefaultDirName={commonpf}\GAPIzer
 DefaultGroupName=GAPIzer
 OutputBaseFilename=GAPIzer-Installer
 Compression=zip
+OutputDir=Output
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -12,7 +13,7 @@ Name: "portuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
 
 [Files]
 ; Adicione o binário gerado da pasta bin
-Source: "bin\gapizer.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\gapizer.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\GAPIzer CLI"; Filename: "{app}\gapizer.exe"
