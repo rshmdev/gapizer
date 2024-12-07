@@ -45,28 +45,29 @@ jobs:
       - name: Build Windows Binary
         run: go build -o bin/gapizer.exe ./src/main.go
 
+      # 7. Build Windows Installer
       - name: Build Windows Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: installer/gapizer_installer.iss
           options: /O+
 
-      # 9. Debug Paths (optional, for debugging purposes)
+      # 8. Debug Paths
       - name: Debug Paths
         run: |
           echo "Current Directory:"
           pwd
-          echo "Listing Output Directory:"
-          dir Output
+          echo "Listing Installer Output Directory:"
+          dir installer/Output
 
-      # 10. Upload Installer as Artifact
+      # 9. Upload Installer as Artifact
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: gapizer-installer
-          path: Output\GAPIzer-Installer.exe
+          path: installer/Output/GAPIzer-Installer.exe
 
-      # 11. Run semantic-release for versioning and npm publish
+      # 10. Run semantic-release for versioning and npm publish
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
