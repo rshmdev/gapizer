@@ -45,14 +45,11 @@ jobs:
       - name: Build Windows Binary
         run: go build -o bin/gapizer.exe ./src/main.go
 
-      # 7. Install Inno Setup (Windows installer)
-      - name: Install Inno Setup
-        run: choco install innosetup --yes
-
-      # 8. Build Windows Installer
       - name: Build Windows Installer
-        run: |
-          "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' installer/gapizer_installer.iss"
+        uses: minionguyjpro/inno-setup-action@v5
+        with:
+          script: installer/gapizer_installer.iss
+          quiet: true
 
       # 9. Debug Paths (optional, for debugging purposes)
       - name: Debug Paths
