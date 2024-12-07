@@ -70,6 +70,8 @@ jobs:
       # 10. Run semantic-release for versioning and npm publish
       - name: Run semantic-release
         working-directory: cli
+        with:
+          persist-credentials: false
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
