@@ -46,10 +46,10 @@ jobs:
         run: go build -o bin/gapizer.exe ./src/main.go
 
       - name: Build Windows Installer
-        uses: minionguyjpro/inno-setup-action@v5
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
-          script: installer/gapizer_installer.iss
-          quiet: true
+          path: installer/gapizer_installer.iss
+          options: /O+
 
       # 9. Debug Paths (optional, for debugging purposes)
       - name: Debug Paths
