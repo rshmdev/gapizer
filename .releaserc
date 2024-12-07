@@ -1,4 +1,5 @@
 {
+    "repositoryUrl": "https://github.com/rshmdev/gapizer",
     "branches": ["main"],
     "plugins": [
       [
