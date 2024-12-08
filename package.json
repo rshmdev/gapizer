@@ -11,20 +11,11 @@
     "gapizer": "./cli.js"
   },
   "scripts": {
-    "build": "go build -o bin/gapizer.exe ./src/main.go",
-    "test": "echo 'No tests yet'"
+    "build": "go build -o bin/gapizer.exe ./src/main.go"
   },
   "author": "Rian Moraes",
   "license": "MIT",
   "os": ["win32"],
-  "files": [
-    "bin/",
-    "src/",
-    "installer/",
-    "cli.js",
-    "README.md",
-    "LICENSE"
-  ],
   "devDependencies": {
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/npm": "^12.0.1",
