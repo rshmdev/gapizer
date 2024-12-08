@@ -5,7 +5,7 @@
       [
         "@semantic-release/npm",
         {
-          "pkgRoot": "cli", 
+          "pkgRoot": ".", 
           "npmPublish": true
         }
       ],
