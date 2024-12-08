@@ -18,39 +18,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Debug: Verify package-lock.json
-      - name: Verify package-lock.json
-        run: Get-ChildItem -Path cli -Recurse
-
-      # 3. Set up Node.js
+      # 2. Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 22
           cache: 'npm'
 
-      # 4. Install Node.js dependencies
+      # 3. Install Node.js dependencies
       - name: Install Node.js dependencies
         run: npm ci
 
-      # 5. Set up Go
+      # 4. Set up Go
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: "1.23"
 
-      # 6. Build Go binary
+      # 5. Build Go binary
       - name: Build CLI and Go binary
-        run: go build -o bin/gapizer.exe ./src/main.go
+        run: npm run build
 
-      # 7. Build Windows Installer
+      # 6. Build Windows Installer
       - name: Build Windows Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: installer/gapizer_installer.iss
           options: /O+
 
-      # 8. Debug Paths
+      # 7. Debug Paths
       - name: Debug Paths
         run: |
           echo "Current Directory:"
@@ -58,16 +54,9 @@ jobs:
           echo "Listing Installer Output Directory:"
           dir installer/Output
 
-      # 9. Upload Installer as Artifact
-      - name: Upload Installer as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: gapizer-installer
-          path: installer/Output/GAPIzer-Installer.exe
-
-      # 10. Run semantic-release for versioning and npm publish
+      # 8. Run semantic-release
       - name: Run semantic-release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release --branch=main
+        run: npx semantic-release --debug --branch=main

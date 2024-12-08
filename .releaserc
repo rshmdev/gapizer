@@ -13,7 +13,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "npm run build && go build -o bin/gapizer.exe ./src/main.go && 'C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe' installer/gapizer_installer.iss"
+        "prepareCmd": "npm run build && 'C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe' installer/gapizer_installer.iss"
       }
     ]
   ]
