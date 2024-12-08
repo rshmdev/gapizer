@@ -28,11 +28,9 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
-          cache-dependency-path: cli/package-lock.json
 
       # 4. Install Node.js dependencies
       - name: Install Node.js dependencies
-        working-directory: cli
         run: npm ci
 
       # 5. Set up Go
@@ -43,10 +41,7 @@ jobs:
 
       # 6. Build Go binary
       - name: Build CLI and Go binary
-        run: |
-          npm install --prefix cli
-          npm run build --prefix cli
-          go build -o bin/gapizer.exe ./src/main.go
+        run: go build -o bin/gapizer.exe ./src/main.go
 
       # 7. Build Windows Installer
       - name: Build Windows Installer

@@ -8,3 +8,4 @@ cli/node_modules/
 
 # Installer output
 Output/
+node_modules/
