@@ -16,8 +16,6 @@
   "author": "Rian Moraes",
   "license": "MIT",
   "os": [
-    "darwin",
-    "linux",
     "win32"
   ],
 
