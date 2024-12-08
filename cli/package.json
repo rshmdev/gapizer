@@ -20,6 +20,7 @@
     "linux",
     "win32"
   ],
+
   "devDependencies": {
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/npm": "^12.0.1",

@@ -1,20 +1,20 @@
 {
-    "repositoryUrl": "https://github.com/rshmdev/gapizer",
-    "branches": ["main"],
-    "plugins": [
-      [
-        "@semantic-release/npm",
-        {
-          "pkgRoot": ".", 
-          "npmPublish": true
-        }
-      ],
-      [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "cd cli && npm run build && cd .. && go build -o bin/gapizer.exe && 'C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe' installer/gapizer_installer.iss"
-        }
-      ]
+  "repositoryUrl": "https://github.com/rshmdev/gapizer",
+  "branches": [
+    "main"
+  ],
+  "plugins": [
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": true
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "npm run build && go build -o bin/gapizer.exe ./src/main.go && 'C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe' installer/gapizer_installer.iss"
+      }
     ]
-  }
-  
+  ]
+}

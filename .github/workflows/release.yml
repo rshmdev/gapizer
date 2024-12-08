@@ -42,8 +42,11 @@ jobs:
           go-version: "1.23"
 
       # 6. Build Go binary
-      - name: Build Windows Binary
-        run: go build -o bin/gapizer.exe ./src/main.go
+      - name: Build CLI and Go binary
+        run: |
+          npm install --prefix cli
+          npm run build --prefix cli
+          go build -o bin/gapizer.exe ./src/main.go
 
       # 7. Build Windows Installer
       - name: Build Windows Installer
