@@ -16,6 +16,17 @@
       {
         "prepareCmd": "npm run build  && \"C:\\\\Program Files (x86)\\\\Inno Setup 6\\\\ISCC.exe\" installer/gapizer_installer.iss"
       }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "bin/gapizer.exe",
+            "label": "GAPIzer Windows Executable"
+          }
+        ]
+      }
     ]
   ]
 }
