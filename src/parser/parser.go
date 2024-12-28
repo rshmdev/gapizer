@@ -51,7 +51,7 @@ type Endpoint struct {
 }
 
 func ValidateRequest(request map[string]string) error {
-	validTypes := []string{"string", "int", "float", "bool"}
+	validTypes := []string{"string", "int", "float64", "bool"}
 
 	for key, typ := range request {
 		isValidType := false

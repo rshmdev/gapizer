@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 	{{ if eq .Type "sqlite" }}
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 	{{ else if eq .Type "mysql" }}
 	_ "github.com/go-sql-driver/mysql"
 	{{ else if eq .Type "postgresql" }}
@@ -18,7 +18,7 @@ func InitDatabase() {
 	var err error
 
 	{{ if eq .Type "sqlite" }}
-	DB, err = sql.Open("sqlite3", "{{ .Name }}")
+	DB, err = sql.Open("sqlite", "{{ .Name }}")
 	{{ else if eq .Type "mysql" }}
 	dsn := "{{ .Username }}:{{ .Password }}@tcp({{ .Host }}:{{ .Port }})/{{ .Name }}"
 	DB, err = sql.Open("mysql", dsn)

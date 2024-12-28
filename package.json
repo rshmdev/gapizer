@@ -15,7 +15,14 @@
   },
   "author": "Rian Moraes",
   "license": "MIT",
-  "os": ["win32"],
+  "os": [
+    "win32"
+  ],
+  "files": [
+    "bin/",
+    "cli.js",
+    "src/"
+  ],
   "devDependencies": {
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/npm": "^12.0.1",

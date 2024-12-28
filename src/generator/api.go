@@ -110,14 +110,6 @@ func GenerateAPI(config *parser.Config, outputDir string) error {
 		return fmt.Errorf("erro ao atualizar go.mod: %w", err)
 	}
 
-	if config.Database.Type == "sqlite" {
-		fmt.Println(`
-IMPORTANTE: Para usar SQLite, habilite o CGO_ENABLED ao rodar ou compilar o projeto:
-  - Rodar: CGO_ENABLED=1 go run main.go
-  - Compilar: CGO_ENABLED=1 go build -o myapp main.go
-		`)
-	}
-
 	return nil
 }
 
@@ -129,17 +121,15 @@ func updateGoMod(outputDir, dbType string) error {
 		Module  string
 		Version string
 	}{
-		// Dependência JWT
 		{"github.com/golang-jwt/jwt/v4", "v4.5.0"},
 	}
 
-	// Dependências específicas para o banco de dados
 	switch dbType {
 	case "sqlite":
 		dependencies = append(dependencies, struct {
 			Module  string
 			Version string
-		}{"github.com/mattn/go-sqlite3", "v1.14.17"})
+		}{"modernc.org/sqlite", "v1.34.4"})
 	case "mysql":
 		dependencies = append(dependencies, struct {
 			Module  string
@@ -177,6 +167,15 @@ func updateGoMod(outputDir, dbType string) error {
 		if err := cmd.Run(); err != nil {
 			return fmt.Errorf("erro ao executar 'go get' para %s: %w", dep.Module, err)
 		}
+	}
+
+	// Rodar `go mod tidy` para garantir que o go.sum esteja atualizado
+	cmd := exec.Command("go", "mod", "tidy")
+	cmd.Dir = outputDir
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("erro ao executar 'go mod tidy': %w", err)
 	}
 
 	return nil

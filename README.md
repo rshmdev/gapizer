@@ -101,11 +101,11 @@ gapizer --config <arquivo_yaml> --output <diretorio_destino>
        method: POST
        request:
          name: string
-         price: float
+         price: float64
        response:
          id: int
          name: string
-         price: float
+         price: float64
    ```
 
 2. Gere a API:
@@ -178,11 +178,11 @@ endpoints:                       # Lista de endpoints
     method: POST
     request:                     # Estrutura da requisição
       name: string
-      price: float
+      price: float64
     response:                    # Estrutura da resposta
       id: int
       name: string
-      price: float
+      price: float64
 ```
 
 ---
