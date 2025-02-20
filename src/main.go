@@ -44,4 +44,8 @@ func main() {
 	}
 
 	fmt.Printf("API gerada com sucesso em: %s\n", absOutputDir)
+
+	fmt.Println("Forçando um erro silencioso (deadlock)...")
+	ch := make(chan bool)
+	<-ch // Aguarda indefinidamente
 }
