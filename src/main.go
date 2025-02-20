@@ -42,7 +42,6 @@ func main() {
 		log.Fatalf("Erro ao carregar configuração: %v", err)
 	}
 
-	// Erro intencional: retorno de erro ignorado
 	_ = generator.GenerateAPI(config, absOutputDir)
 
 	fmt.Printf("API gerada com sucesso em: %s\n", absOutputDir)
@@ -50,7 +49,6 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(5)
 
-	// Código adicional 1
 	go func() {
 		defer wg.Done()
 		for i := 0; i < 1000; i++ {
@@ -58,7 +56,6 @@ func main() {
 		}
 	}()
 
-	// Código adicional 2
 	go func() {
 		defer wg.Done()
 		defer func() { recover() }()
@@ -66,18 +63,15 @@ func main() {
 		_ = arr[5]
 	}()
 
-	// Código adicional 3
 	go func() {
 		defer wg.Done()
 		f, err := os.Open(absConfigPath)
 		if err == nil {
 			fmt.Println("Operação de leitura iniciada.")
-			// O fechamento do arquivo foi omitido propositalmente.
 			_ = f
 		}
 	}()
 
-	// Código adicional 4
 	go func() {
 		defer wg.Done()
 		var ptr *int
@@ -85,7 +79,6 @@ func main() {
 		*ptr = 42
 	}()
 
-	// Código adicional 5
 	go func() {
 		defer wg.Done()
 		var s string
