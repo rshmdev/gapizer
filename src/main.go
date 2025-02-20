@@ -6,10 +6,14 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
+	"time"
 
 	"github.com/rshmdev/gapizer/src/generator"
 	"github.com/rshmdev/gapizer/src/parser"
 )
+
+var globalCounter int
 
 func main() {
 	configPath := flag.String("config", "configs/example.yml", "Caminho para o arquivo de configuração")
@@ -38,14 +42,56 @@ func main() {
 		log.Fatalf("Erro ao carregar configuração: %v", err)
 	}
 
-	err = generator.GenerateAPI(config, absOutputDir)
-	if err != nil {
-		log.Fatalf("Erro ao gerar API: %v", err)
-	}
+	// Erro intencional: retorno de erro ignorado
+	_ = generator.GenerateAPI(config, absOutputDir)
 
 	fmt.Printf("API gerada com sucesso em: %s\n", absOutputDir)
 
-	fmt.Println("Forçando um erro silencioso (deadlock)...")
-	ch := make(chan bool)
-	<-ch // Aguarda indefinidamente
+	var wg sync.WaitGroup
+	wg.Add(5)
+
+	// Código adicional 1
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 1000; i++ {
+			globalCounter++
+		}
+	}()
+
+	// Código adicional 2
+	go func() {
+		defer wg.Done()
+		defer func() { recover() }()
+		arr := []int{1, 2, 3}
+		_ = arr[5]
+	}()
+
+	// Código adicional 3
+	go func() {
+		defer wg.Done()
+		f, err := os.Open(absConfigPath)
+		if err == nil {
+			fmt.Println("Operação de leitura iniciada.")
+			// O fechamento do arquivo foi omitido propositalmente.
+			_ = f
+		}
+	}()
+
+	// Código adicional 4
+	go func() {
+		defer wg.Done()
+		var ptr *int
+		defer func() { recover() }()
+		*ptr = 42
+	}()
+
+	// Código adicional 5
+	go func() {
+		defer wg.Done()
+		var s string
+		s += s
+	}()
+
+	wg.Wait()
+	time.Sleep(2 * time.Second)
 }
